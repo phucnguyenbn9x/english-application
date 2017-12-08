@@ -1,0 +1,630 @@
+package View.GUI;
+
+import Controller.Controller;
+import Controller.WordControl;
+import Model.Word;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+/**
+ * represent for dictionary GUI of this application
+ *
+ * @author Nguyễn Phúc
+ */
+public class DictionaryGUI extends javax.swing.JFrame {
+
+    // controller of this application
+    private Controller mainController;
+    // controller of words
+    private WordControl Controller;
+    // list words of dictionary
+    private ArrayList<Word> listWord;
+    // list words of dicionary 're used
+    private JList<Word> wordsList;
+    private Word currentWord = null;
+
+    // Icon true
+    ImageIcon iconTrue = new ImageIcon("src/View/TitleIcons/IconTrue.png");
+
+    // Hộp thoại của Add
+    AddDialog addDialog;
+    // Hộp thoại của Delete
+    DeleteDialog deleteDialog;
+    // Hộp thoại của Edit
+    EditWordDialog editWordDialog;
+    // Hộp thoại Test
+    TestDialog testDialog;
+    // Learned Words Dialog
+    LearnedWordDialog learnedWordsDialog;
+
+    /**
+     * Creates new form DictionaryGUI
+     *
+     * @param controller app controller
+     */
+    public DictionaryGUI(Controller controller) {
+        this.mainController = controller;
+        this.Controller = controller.getWordController();
+        this.listWord = Controller.getListWord();
+        initComponents();
+        initDictionary(this.listWord);
+        setupDialogs();
+        setIcon();
+        setBackground();
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                setVisible(false);
+                HomeScreen homeScreen = new HomeScreen(mainController);
+                homeScreen.setVisible(true);
+            }
+        });
+    }
+
+    /**
+     * setting up dialog's data
+     */
+    private void setupDialogs() {
+        this.addDialog = new AddDialog(this.mainController);
+        this.deleteDialog = new DeleteDialog(this.mainController);
+        this.editWordDialog = new EditWordDialog(this.mainController);
+        this.testDialog = new TestDialog(this.mainController);
+        this.learnedWordsDialog = new LearnedWordDialog(this.mainController);
+    }
+
+    /**
+     * update user interface
+     */
+    public void updateGUI() {
+        this.listWord = Controller.getListWord();
+        this.currentWord = null;
+        this.jbRefreshActionPerformed(null);
+    }
+
+    /**
+     * update all state of this dialog
+     */
+    private void updateAllState() {
+        this.listWord = Controller.getListWord();
+        this.currentWord = null;
+    }
+
+    /**
+     * initial dictionary in scroll panel
+     *
+     * @param listWord list of words
+     */
+    private void initDictionary(ArrayList<Word> listWord) {
+        DefaultListModel<Word> listModel = Controller.createListModel(listWord);
+        wordsList = new JList<Word>(listModel);
+        wordsList.setFont(new Font("Arial", Font.PLAIN, 12));
+        wordsList.setCellRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                Component renderer = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (renderer instanceof JLabel && value instanceof Word) {
+                    ((JLabel) renderer).setText(((Word) value).getName());
+                }
+                return renderer;
+            }
+
+        });
+        wordsList.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                Word selectedWord = wordsList.getSelectedValue();
+                if (selectedWord != null) {
+                    jaTranslation.setText(selectedWord.getMeaning());
+                    jfFind.setText(selectedWord.getName());
+                    jaPronounce.setText(selectedWord.getPronounciation());
+                    Controller.createImage(selectedWord.getWordImage(), jImage);
+                }
+                currentWord = selectedWord;
+            }
+        });
+        jaDictionary.setViewportView(wordsList);
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jbFind = new javax.swing.JButton();
+        jfFind = new javax.swing.JTextField();
+        jbAdd = new javax.swing.JButton();
+        jbDelete = new javax.swing.JButton();
+        jbEdit = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jaTranslation = new javax.swing.JTextArea();
+        jlName = new javax.swing.JLabel();
+        jbBack = new javax.swing.JButton();
+        jlDate = new javax.swing.JLabel();
+        jlVersion = new javax.swing.JLabel();
+        jlAuthor = new javax.swing.JLabel();
+        jbRefresh = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jbTest = new javax.swing.JButton();
+        jaDictionary = new javax.swing.JScrollPane();
+        jLabel3 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jaPronounce = new javax.swing.JTextArea();
+        jImage = new javax.swing.JLabel();
+        jLearnedWord = new javax.swing.JButton();
+        jMenuBar2 = new javax.swing.JMenuBar();
+        jMenuFile = new javax.swing.JMenu();
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
+        jMenuExit = new javax.swing.JMenuItem();
+
+        setTitle("English Dictionary");
+        setResizable(false);
+
+        jbFind.setIcon(new javax.swing.ImageIcon(getClass().getResource("/View/GUI/AppIcons/IconFind.png"))); // NOI18N
+        jbFind.setText("Find");
+        jbFind.setToolTipText("Find a word");
+        jbFind.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbFindActionPerformed(evt);
+            }
+        });
+
+        jfFind.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jfFindKeyTyped(evt);
+            }
+        });
+
+        jbAdd.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jbAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/View/GUI/AppIcons/IconAdd.png"))); // NOI18N
+        jbAdd.setText("Add");
+        jbAdd.setToolTipText("Add a new word");
+        jbAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbAddActionPerformed(evt);
+            }
+        });
+
+        jbDelete.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        jbDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/View/GUI/AppIcons/IconDelete.png"))); // NOI18N
+        jbDelete.setText("Delete");
+        jbDelete.setToolTipText("Delete a word");
+        jbDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbDeleteActionPerformed(evt);
+            }
+        });
+
+        jbEdit.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        jbEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/View/GUI/AppIcons/IconEdit.png"))); // NOI18N
+        jbEdit.setText("Edit");
+        jbEdit.setToolTipText("Edit a word");
+        jbEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbEditActionPerformed(evt);
+            }
+        });
+
+        jaTranslation.setEditable(false);
+        jaTranslation.setColumns(20);
+        jaTranslation.setLineWrap(true);
+        jaTranslation.setRows(5);
+        jaTranslation.setWrapStyleWord(true);
+        jScrollPane1.setViewportView(jaTranslation);
+
+        jlName.setFont(new java.awt.Font("Dialog", 1, 36)); // NOI18N
+        jlName.setForeground(new java.awt.Color(51, 51, 51));
+        jlName.setIcon(new javax.swing.ImageIcon(getClass().getResource("/View/GUI/AppIcons/IconLabel.png"))); // NOI18N
+        jlName.setText("ENGLISH DICTIONARY");
+
+        jbBack.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        jbBack.setIcon(new javax.swing.ImageIcon(getClass().getResource("/View/GUI/AppIcons/IconExit.png"))); // NOI18N
+        jbBack.setText("Back");
+        jbBack.setToolTipText("Back to homescreen");
+        jbBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbBackActionPerformed(evt);
+            }
+        });
+
+        jlDate.setText("Date");
+        jlDate.addAncestorListener(new javax.swing.event.AncestorListener() {
+            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+            }
+            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
+                jlDateAncestorAdded(evt);
+            }
+            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
+            }
+        });
+
+        jlVersion.setText("Version: Demo");
+
+        jlAuthor.setText("Author: Nguyen Van Phuc & Nguyen Duc Thang");
+
+        jbRefresh.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        jbRefresh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/View/GUI/AppIcons/IconRefresh.png"))); // NOI18N
+        jbRefresh.setText("Refresh");
+        jbRefresh.setToolTipText("Refresh state");
+        jbRefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbRefreshActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        jLabel1.setText("List:");
+
+        jLabel2.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        jLabel2.setText("Meaning:");
+
+        jbTest.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        jbTest.setIcon(new javax.swing.ImageIcon(getClass().getResource("/View/GUI/AppIcons/IconTest.png"))); // NOI18N
+        jbTest.setText("Test");
+        jbTest.setToolTipText("Do a test");
+        jbTest.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbTestActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        jLabel3.setText("Pronounciation:");
+
+        jaPronounce.setColumns(20);
+        jaPronounce.setFont(new java.awt.Font("Dialog", 2, 14)); // NOI18N
+        jaPronounce.setRows(5);
+        jScrollPane2.setViewportView(jaPronounce);
+
+        jImage.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        jImage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        jLearnedWord.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        jLearnedWord.setIcon(new javax.swing.ImageIcon(getClass().getResource("/View/GUI/AppIcons/IconList.png"))); // NOI18N
+        jLearnedWord.setText("Learned");
+        jLearnedWord.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jLearnedWordActionPerformed(evt);
+            }
+        });
+
+        jMenuFile.setText("File");
+        jMenuFile.add(jSeparator1);
+
+        jMenuExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_MASK));
+        jMenuExit.setText("Exit");
+        jMenuExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuExitActionPerformed(evt);
+            }
+        });
+        jMenuFile.add(jMenuExit);
+
+        jMenuBar2.add(jMenuFile);
+
+        setJMenuBar(jMenuBar2);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jlVersion)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(289, 289, 289)
+                                        .addComponent(jlAuthor)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jlDate)
+                                .addGap(8, 8, 8))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jfFind, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel1)
+                                        .addGap(0, 143, Short.MAX_VALUE))
+                                    .addComponent(jaDictionary))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jbFind, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jLearnedWord, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jbTest, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jbDelete, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jbRefresh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jbEdit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jbAdd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jbBack, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(8, 8, 8)
+                                        .addComponent(jImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                                                .addComponent(jlName, javax.swing.GroupLayout.PREFERRED_SIZE, 476, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 479, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jScrollPane2))
+                                        .addGap(0, 2, Short.MAX_VALUE))))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(295, 295, 295)
+                        .addComponent(jLabel2)))
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(jfFind)
+                            .addComponent(jbFind)
+                            .addComponent(jlName)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(72, 72, 72)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jaDictionary)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jScrollPane1)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(40, 40, 40)
+                                .addComponent(jbAdd)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jbEdit)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jbRefresh)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jbDelete)
+                            .addComponent(jLabel3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jbTest, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLearnedWord, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jbBack)
+                                .addGap(0, 125, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jlDate)
+                    .addComponent(jlAuthor)
+                    .addComponent(jlVersion))
+                .addContainerGap())
+        );
+
+        layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jbAdd, jbBack, jbDelete, jbEdit, jbFind, jbRefresh, jbTest, jfFind});
+
+        layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jlAuthor, jlDate, jlVersion});
+
+        layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jLabel1, jLabel2});
+
+        pack();
+        setLocationRelativeTo(null);
+    }// </editor-fold>//GEN-END:initComponents
+
+    /**
+     * Tạo sự kiện cho jbDelete
+     *
+     * @param evt Sự kiện
+     */
+    private void jbDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbDeleteActionPerformed
+        if(this.currentWord != null) {
+            deleteDialog.setWordToDelete(currentWord);
+        }
+        deleteDialog.setVisible(true);
+    }//GEN-LAST:event_jbDeleteActionPerformed
+
+    /**
+     * Tạo sự kiện cho jbFind
+     *
+     * @param evt Sự kiện
+     */
+    private void jbFindActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbFindActionPerformed
+        String find = jfFind.getText();
+        if (find.equalsIgnoreCase("")) {
+            JOptionPane.showMessageDialog(null, "Chưa nhập từ cần tìm.", "Error", JOptionPane.ERROR_MESSAGE);
+            jfFind.requestFocus();
+            return;
+        }
+        ArrayList<Word> matchesWord = new ArrayList<Word>();
+        for (Word word : this.listWord) {
+            if (word.getName().regionMatches(true, 0, find, 0, find.length())) {
+                matchesWord.add(word);
+            }
+        }
+        if (matchesWord.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Khong tim thay tu trong danh sach ", "Error", JOptionPane.ERROR_MESSAGE);
+            jfFind.requestFocus();
+            return;
+        }
+        this.initDictionary(matchesWord);
+    }//GEN-LAST:event_jbFindActionPerformed
+
+    /**
+     * Tạo sự kiện cho jbBack
+     *
+     * @param evt Sự kiện
+     */
+    private void jbBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbBackActionPerformed
+        this.setVisible(false);
+        HomeScreen homeScreen = new HomeScreen(mainController);
+        homeScreen.setVisible(true);
+    }//GEN-LAST:event_jbBackActionPerformed
+
+    /**
+     * Tạo sự kiện cho jbAdd
+     *
+     * @param evt Sự kiện
+     */
+    private void jbAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbAddActionPerformed
+        addDialog.setVisible(true);
+    }//GEN-LAST:event_jbAddActionPerformed
+
+    /**
+     * Tạo sự kiện cho jbEdit
+     *
+     * @param evt sự kiện
+     */
+    private void jbEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbEditActionPerformed
+        if(currentWord != null) {
+            editWordDialog.setWordToEdit(currentWord);
+        }
+        editWordDialog.setVisible(true);
+    }//GEN-LAST:event_jbEditActionPerformed
+
+    /**
+     * Tạo nội dung cho jlDate
+     *
+     * @param evt Nội dung
+     */
+    private void jlDateAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_jlDateAncestorAdded
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy zzz");
+        Date date = new Date();
+        String strDate = dateFormat.format(date);
+        jlDate.setText(strDate);
+    }//GEN-LAST:event_jlDateAncestorAdded
+
+    /**
+     * Tạo sự kiện cho jbRefresh
+     *
+     * @param evt Sự kiện
+     */
+    private void jbRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbRefreshActionPerformed
+        jfFind.setText("");
+        this.updateAllState();
+        this.initDictionary(this.listWord);
+        if (evt == null) {
+            return;
+        }
+        JOptionPane.showMessageDialog(null, "Done!", "Information", JOptionPane.INFORMATION_MESSAGE, iconTrue);
+    }//GEN-LAST:event_jbRefreshActionPerformed
+
+    /**
+     * Tạo sự kiện cho jbTest
+     *
+     * @param evt Sự kiện
+     */
+    private void jbTestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbTestActionPerformed
+        if (!testDialog.canMakeATest()) {
+            JOptionPane.showMessageDialog(null, "Bạn chưa học từ nào ", "Information", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        testDialog.setVisible(true);
+    }//GEN-LAST:event_jbTestActionPerformed
+
+    /**
+     * Tạo sự kiện cho jMenuExit
+     *
+     * @param evt Sự kiện
+     */
+    private void jMenuExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuExitActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_jMenuExitActionPerformed
+
+    /**
+     * su kien go phim vao o tim kiem
+     *
+     * @param evt event
+     */
+    private void jfFindKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jfFindKeyTyped
+        String input = jfFind.getText() + ((int) evt.getKeyChar() != 8 ? evt.getKeyChar() : "");
+        ArrayList<Word> matchesWord = new ArrayList<Word>();
+        for (Word word : this.listWord) {
+            if (word.getName().regionMatches(true, 0, input, 0, input.length())) {
+                matchesWord.add(word);
+            }
+        }
+        this.initDictionary(matchesWord);
+    }//GEN-LAST:event_jfFindKeyTyped
+
+    /**
+     * event when button learned word clicked
+     *
+     * @param evt event fired
+     */
+    private void jLearnedWordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jLearnedWordActionPerformed
+        this.learnedWordsDialog.setupData(this.Controller.getLearnedWord());
+        this.learnedWordsDialog.setVisible(true);
+    }//GEN-LAST:event_jLearnedWordActionPerformed
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jImage;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JButton jLearnedWord;
+    private javax.swing.JMenuBar jMenuBar2;
+    private javax.swing.JMenuItem jMenuExit;
+    private javax.swing.JMenu jMenuFile;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JPopupMenu.Separator jSeparator1;
+    private javax.swing.JScrollPane jaDictionary;
+    private javax.swing.JTextArea jaPronounce;
+    private javax.swing.JTextArea jaTranslation;
+    private javax.swing.JButton jbAdd;
+    private javax.swing.JButton jbBack;
+    private javax.swing.JButton jbDelete;
+    private javax.swing.JButton jbEdit;
+    private javax.swing.JButton jbFind;
+    private javax.swing.JButton jbRefresh;
+    private javax.swing.JButton jbTest;
+    private javax.swing.JTextField jfFind;
+    private javax.swing.JLabel jlAuthor;
+    private javax.swing.JLabel jlDate;
+    private javax.swing.JLabel jlName;
+    private javax.swing.JLabel jlVersion;
+    // End of variables declaration//GEN-END:variables
+
+    /**
+     * Cài đặt Icon
+     */
+    private void setIcon() {
+        ImageIcon icon = new ImageIcon("src/View/TitleIcons/IconDictionary.png");
+        setIconImage(icon.getImage());
+    }
+
+    /**
+     * Cài đặt background
+     */
+    private void setBackground() {
+        getContentPane().setBackground(new Color(230, 230, 230));
+    }
+}
