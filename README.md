@@ -1,3 +1,1 @@
-# english-application
-
-## English Dictionary Application
+# English Dictionary Application
